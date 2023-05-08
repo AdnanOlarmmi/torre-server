@@ -1,6 +1,8 @@
 const express = require('express');
+const serverless = require('serverless-http');
 const request = require('request');
 const app = express();
+const router = express.Router();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -12,11 +14,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/hello', (req, res) => {
+router.get('/hello', (req, res) => {
     res.send('Hello World!');
 });
 
-app.get('/bios/:username', (req, res) => {
+router.get('/bios/:username', (req, res) => {
   const { username } = req.params;
   const url = `https://torre.bio/api/bios/${username}`;
   request(url, (error, response, body) => {
@@ -29,5 +31,8 @@ app.get('/bios/:username', (req, res) => {
   });
 });
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Server running on port ${port}`));
+
+app.use('/.netlify/functions/server', router);
+module.exports.handler = serverless(app);
