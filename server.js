@@ -12,6 +12,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+
 app.get('/bios/:username', (req, res) => {
   const { username } = req.params;
   const url = `https://torre.bio/api/bios/${username}`;
